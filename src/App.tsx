@@ -65,6 +65,10 @@ function App() {
     chrome.storage.local.remove(["lastQuestion", "lastResponse"]);
   };
 
+  const handleSettings = () => {
+    setShowSettings(true);
+  };
+
   if (showSettings) {
     return (
       <Settings
@@ -80,14 +84,11 @@ function App() {
   }
 
   return (
-    <div className="p-4 bg-gray-800 text-white">
+    <div style={{ minWidth: "450px" }} className="p-4 bg-gray-800 text-white">
       {!apiKey && (
         <div className="mb-4 p-2.5 bg-yellow-900 text-white rounded-lg text-sm">
           API key not set. Please
-          <button
-            onClick={() => setShowSettings(true)}
-            className="underline ml-1"
-          >
+          <button onClick={handleSettings} className="underline ml-1">
             go to settings
           </button>
           .
@@ -103,24 +104,30 @@ function App() {
           className="block p-2.5 w-full text-sm text-white bg-gray-700 rounded-lg border border-gray-600 focus:ring-blue-500 focus:border-blue-500"
           placeholder="Ask a question about the page..."
         ></textarea>
-        <div className="absolute top-2 right-2 flex space-x-2">
-          <button
-            onClick={handleAsk}
-            disabled={loading}
-            className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm p-2 text-center disabled:bg-gray-500"
-          >
-            Ask
-          </button>
-          <button
-            onClick={handleClear}
-            className="text-white bg-gray-600 hover:bg-gray-700 focus:ring-4 focus:ring-gray-500 font-medium rounded-lg text-sm p-2 text-center"
-          >
-            Clear
-          </button>
-        </div>
+      </div>
+      <div className="flex space-x-2 my-2">
+        <button
+          onClick={handleAsk}
+          disabled={loading}
+          className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-2 focus:ring-blue-300 font-medium rounded-lg text-sm py-1 px-2 text-center disabled:bg-gray-500"
+        >
+          Ask
+        </button>
+        <button
+          onClick={handleClear}
+          className="text-white bg-gray-600 hover:bg-gray-700 focus:ring-2 focus:ring-gray-500 font-medium rounded-lg text-sm py-1 px-2 text-center"
+        >
+          Clear
+        </button>
+        <button
+          onClick={handleSettings}
+          className="text-white bg-gray-600 hover:bg-gray-700 focus:ring-2 focus:ring-gray-500 font-medium rounded-lg text-sm py-1 px-2 text-center"
+        >
+          Settings
+        </button>
       </div>
 
-      <div className="relative">
+      <div className="relative flex-grow">
         <div
           id="response"
           className={`p-2.5 w-full text-sm text-white bg-gray-700 rounded-lg border border-gray-600 min-h-[100px] ${
@@ -135,12 +142,6 @@ function App() {
           </div>
         )}
       </div>
-      <button
-        onClick={() => setShowSettings(true)}
-        className="mt-4 text-white bg-gray-600 hover:bg-gray-700 focus:ring-4 focus:ring-gray-500 font-medium rounded-lg text-sm px-5 py-2.5 text-center w-full"
-      >
-        Settings
-      </button>
     </div>
   );
 }

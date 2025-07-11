@@ -3,19 +3,22 @@
   "name": "Gemini Web Assistant",
   "version": "1.0",
   "description": "Ask Gemini questions about the content of the current page.",
-  "permissions": [
-    "storage",
-    "activeTab",
-    "scripting"
-  ],
-  "host_permissions": [
-    "<all_urls>"
-  ],
+  "permissions": ["storage", "activeTab", "scripting"],
+  "host_permissions": ["<all_urls>"],
   "action": {
     "default_popup": "index.html"
   },
   "background": {
     "scripts": ["background.js"],
     "type": "module"
+  },
+  "commands": {
+    "_execute_action": {
+      "suggested_key": {
+        "default": "Ctrl+Shift+G",
+        "mac": "Ctrl+Shift+G"
+      },
+      "description": "Open the Gemini extension"
+    }
   }
 }
