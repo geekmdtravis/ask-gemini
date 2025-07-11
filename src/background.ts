@@ -11,7 +11,12 @@ chrome.runtime.onMessage.addListener((request, _sender, sendResponse) => {
   }
 });
 
-async function handleAskGemini(request: { apiKey: string, model: string, question: string, includeAll: boolean }) {
+async function handleAskGemini(request: {
+  apiKey: string;
+  model: string;
+  question: string;
+  includeAll: boolean;
+}) {
   const { apiKey, model, question, includeAll } = request;
 
   try {
@@ -33,8 +38,8 @@ async function handleAskGemini(request: { apiKey: string, model: string, questio
 
     const pageContent = result || "No content found.";
 
-    const fullPrompt = `Based on the following content from the webpage, please answer the user's question.\n\nPage Content:\n${pageContent}\n\nUser's Question:\n${question}`;
-    
+    const fullPrompt = `Based on the following content from the webpage, please answer the user's question.\n\nPage Content:\n${pageContent}\n\nUser's Question:\n${question}\n\nDO NOT render any links.`;
+
     const genAI = ai.getGenerativeModel({ model });
     const response = await genAI.generateContent(fullPrompt);
     const text = response.response.text();

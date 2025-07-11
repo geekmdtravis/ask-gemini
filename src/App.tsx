@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import Settings from "./Settings";
+import Response from "./Response";
 
 function App() {
   const [apiKey, setApiKey] = useState("");
@@ -9,19 +10,36 @@ function App() {
   const [response, setResponse] = useState("");
   const [loading, setLoading] = useState(false);
   const [showSettings, setShowSettings] = useState(false);
+  const [markdownEnabled, setMarkdownEnabled] = useState(true);
 
   useEffect(() => {
     chrome.storage.local.get(
-      ["apiKey", "model", "includeAll", "lastQuestion", "lastResponse"],
+      [
+        "apiKey",
+        "model",
+        "includeAll",
+        "lastQuestion",
+        "lastResponse",
+        "markdownEnabled",
+      ],
       (data) => {
         if (data.apiKey) setApiKey(data.apiKey);
         if (data.model) setModel(data.model);
         if (data.includeAll) setIncludeAll(data.includeAll);
         if (data.lastQuestion) setQuestion(data.lastQuestion);
         if (data.lastResponse) setResponse(data.lastResponse);
+        if (data.markdownEnabled !== undefined) {
+          setMarkdownEnabled(data.markdownEnabled);
+        }
       },
     );
   }, []);
+
+  const handleToggleMarkdown = () => {
+    const newMarkdownEnabled = !markdownEnabled;
+    setMarkdownEnabled(newMarkdownEnabled);
+    chrome.storage.local.set({ markdownEnabled: newMarkdownEnabled });
+  };
 
   const handleAsk = async () => {
     if (!apiKey) {
@@ -125,23 +143,23 @@ function App() {
         >
           Settings
         </button>
-      </div>
-
-      <div className="relative flex-grow">
-        <div
-          id="response"
-          className={`p-2.5 w-full text-sm text-white bg-gray-700 rounded-lg border border-gray-600 min-h-[100px] ${
-            loading ? "blur-sm" : ""
+        <button
+          onClick={handleToggleMarkdown}
+          className={`text-white font-medium rounded-lg text-sm py-1 px-2 text-center ${
+            markdownEnabled
+              ? "bg-blue-700 hover:bg-blue-800"
+              : "bg-gray-600 hover:bg-gray-700"
           }`}
         >
-          {response}
-        </div>
-        {loading && (
-          <div className="absolute inset-0 flex justify-center items-center">
-            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-white"></div>
-          </div>
-        )}
+          Markdown
+        </button>
       </div>
+
+      <Response
+        response={response}
+        loading={loading}
+        markdownEnabled={markdownEnabled}
+      />
     </div>
   );
 }
