@@ -1,12 +1,21 @@
 {
   "manifest_version": 3,
-  "name": "My Firefox Extension",
+  "name": "Gemini Web Assistant",
   "version": "1.0",
-  "description": "A simple Firefox extension.",
+  "description": "Ask Gemini questions about the content of the current page.",
   "permissions": [
-    "storage"
+    "storage",
+    "activeTab",
+    "scripting"
+  ],
+  "host_permissions": [
+    "<all_urls>"
   ],
   "action": {
     "default_popup": "index.html"
+  },
+  "background": {
+    "scripts": ["background.js"],
+    "type": "module"
   }
 }
