@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import Settings from "./Settings";
 
 function App() {
   const [apiKey, setApiKey] = useState("");
@@ -7,27 +8,24 @@ function App() {
   const [includeAll, setIncludeAll] = useState(false);
   const [response, setResponse] = useState("");
   const [loading, setLoading] = useState(false);
+  const [showSettings, setShowSettings] = useState(false);
 
   useEffect(() => {
     chrome.storage.local.get(
-      ["apiKey", "lastQuestion", "lastResponse"],
+      ["apiKey", "model", "includeAll", "lastQuestion", "lastResponse"],
       (data) => {
         if (data.apiKey) setApiKey(data.apiKey);
+        if (data.model) setModel(data.model);
+        if (data.includeAll) setIncludeAll(data.includeAll);
         if (data.lastQuestion) setQuestion(data.lastQuestion);
         if (data.lastResponse) setResponse(data.lastResponse);
       },
     );
   }, []);
 
-  const handleApiKeyChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const newApiKey = e.target.value;
-    setApiKey(newApiKey);
-    chrome.storage.local.set({ apiKey: newApiKey });
-  };
-
   const handleAsk = async () => {
     if (!apiKey) {
-      setResponse("Please enter your Gemini API key.");
+      setResponse("Please enter your Gemini API key in settings.");
       return;
     }
     if (!question) {
@@ -67,43 +65,36 @@ function App() {
     chrome.storage.local.remove(["lastQuestion", "lastResponse"]);
   };
 
+  if (showSettings) {
+    return (
+      <Settings
+        apiKey={apiKey}
+        onApiKeyChange={setApiKey}
+        model={model}
+        onModelChange={setModel}
+        includeAll={includeAll}
+        onIncludeAllChange={setIncludeAll}
+        onClose={() => setShowSettings(false)}
+      />
+    );
+  }
+
   return (
-    <div className="p-4 w-96 bg-gray-800 text-white">
-      <h1 className="text-2xl font-bold mb-4">Gemini Web Assistant</h1>
+    <div className="p-4 bg-gray-800 text-white">
+      {!apiKey && (
+        <div className="mb-4 p-2.5 bg-yellow-900 text-white rounded-lg text-sm">
+          API key not set. Please
+          <button
+            onClick={() => setShowSettings(true)}
+            className="underline ml-1"
+          >
+            go to settings
+          </button>
+          .
+        </div>
+      )}
 
-      <div className="mb-4">
-        <label htmlFor="apiKey" className="block mb-2 text-sm font-medium">
-          Gemini API Key
-        </label>
-        <input
-          type="password"
-          id="apiKey"
-          value={apiKey}
-          onChange={handleApiKeyChange}
-          className="bg-gray-700 border border-gray-600 text-white text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
-          placeholder="Enter your API key"
-        />
-      </div>
-
-      <div className="mb-4">
-        <label htmlFor="model" className="block mb-2 text-sm font-medium">
-          Model
-        </label>
-        <select
-          id="model"
-          value={model}
-          onChange={(e) => setModel(e.target.value)}
-          className="bg-gray-700 border border-gray-600 text-white text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
-        >
-          <option value="gemini-2.5-flash">gemini-2.5-flash</option>
-          <option value="gemini-2.5-pro">gemini-2.5-pro</option>
-        </select>
-      </div>
-
-      <div className="mb-4">
-        <label htmlFor="question" className="block mb-2 text-sm font-medium">
-          Question
-        </label>
+      <div className="relative mb-4">
         <textarea
           id="question"
           rows={4}
@@ -112,54 +103,46 @@ function App() {
           className="block p-2.5 w-full text-sm text-white bg-gray-700 rounded-lg border border-gray-600 focus:ring-blue-500 focus:border-blue-500"
           placeholder="Ask a question about the page..."
         ></textarea>
-      </div>
-
-      <div className="flex items-center mb-4">
-        <input
-          id="includeAll"
-          type="checkbox"
-          checked={includeAll}
-          onChange={(e) => setIncludeAll(e.target.checked)}
-          className="w-4 h-4 text-blue-600 bg-gray-700 border-gray-600 rounded focus:ring-blue-600 ring-offset-gray-800 focus:ring-2"
-        />
-        <label htmlFor="includeAll" className="ml-2 text-sm font-medium">
-          Include all page content (not just body)
-        </label>
-      </div>
-
-      <div className="flex justify-between">
-        <button
-          id="askButton"
-          onClick={handleAsk}
-          disabled={loading}
-          className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center disabled:bg-gray-500"
-        >
-          {loading ? "Asking..." : "Ask"}
-        </button>
-        <button
-          id="clearButton"
-          onClick={handleClear}
-          className="text-white bg-gray-600 hover:bg-gray-700 focus:ring-4 focus:ring-gray-500 font-medium rounded-lg text-sm px-5 py-2.5 text-center"
-        >
-          Clear
-        </button>
-      </div>
-
-      {loading && (
-        <div className="mt-4 flex justify-center">
-          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-white"></div>
+        <div className="absolute top-2 right-2 flex space-x-2">
+          <button
+            onClick={handleAsk}
+            disabled={loading}
+            className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm p-2 text-center disabled:bg-gray-500"
+          >
+            Ask
+          </button>
+          <button
+            onClick={handleClear}
+            className="text-white bg-gray-600 hover:bg-gray-700 focus:ring-4 focus:ring-gray-500 font-medium rounded-lg text-sm p-2 text-center"
+          >
+            Clear
+          </button>
         </div>
-      )}
-
-      <div
-        id="response"
-        className="mt-4 p-2.5 w-full text-sm text-white bg-gray-700 rounded-lg border border-gray-600 min-h-[50px]"
-      >
-        {response}
       </div>
+
+      <div className="relative">
+        <div
+          id="response"
+          className={`p-2.5 w-full text-sm text-white bg-gray-700 rounded-lg border border-gray-600 min-h-[100px] ${
+            loading ? "blur-sm" : ""
+          }`}
+        >
+          {response}
+        </div>
+        {loading && (
+          <div className="absolute inset-0 flex justify-center items-center">
+            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-white"></div>
+          </div>
+        )}
+      </div>
+      <button
+        onClick={() => setShowSettings(true)}
+        className="mt-4 text-white bg-gray-600 hover:bg-gray-700 focus:ring-4 focus:ring-gray-500 font-medium rounded-lg text-sm px-5 py-2.5 text-center w-full"
+      >
+        Settings
+      </button>
     </div>
   );
 }
 
 export default App;
-
