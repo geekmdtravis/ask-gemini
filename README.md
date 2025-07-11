@@ -1,69 +1,79 @@
-# React + TypeScript + Vite
+# Gemini Web Assistant
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+A Firefox extension that allows you to ask Gemini questions about the content of the current page.
 
-Currently, two official plugins are available:
+## Features
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+*   Ask Gemini questions about the content of the current page.
+*   Choose between `gemini-2.5-flash` and `gemini-2.5-pro` models.
+*   Include all page content (not just the body) with a toggle.
+*   View responses in markdown or plain text.
+*   Saves your API key and other settings in local storage.
+*   Saves your last question and response.
 
-## Expanding the ESLint configuration
+## Installation
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+### From the Firefox Add-on Store
 
-```js
-export default tseslint.config([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+(Coming soon, maybe...)
 
-      // Remove tseslint.configs.recommended and replace with this
-      ...tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      ...tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      ...tseslint.configs.stylisticTypeChecked,
+### For Development
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
+1.  Clone the repository:
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+    ```bash
+    git clone https://github.com/geekmdtravis/ask-gemini.git
+    ```
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+2.  Install the dependencies:
 
-export default tseslint.config([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
+    ```bash
+    npm install
+    ```
+
+3.  Build the extension:
+
+    ```bash
+    npm run build
+    ```
+
+4.  Open Firefox and go to `about:debugging`.
+5.  Click on "This Firefox" and then "Load Temporary Add-on".
+6.  Select the `dist` directory in the project folder.
+7.  Select the "manifest.json" file.
+
+## Usage
+
+1.  Click on the extension icon in the Firefox toolbar.
+2.  Enter your Gemini API key in the settings.
+3.  Enter a question in the text area and click "Ask".
+4.  The response will be displayed below the text area.
+
+## Contributing
+
+Contributions are welcome! Please follow these steps to contribute:
+
+1.  Fork the repository.
+2.  Create a new branch:
+
+    ```bash
+    git checkout -b my-new-feature
+    ```
+
+3.  Make your changes and commit them:
+
+    ```bash
+    git commit -am 'Add some feature'
+    ```
+
+4.  Push to the branch:
+
+    ```bash
+    git push origin my-new-feature
+    ```
+
+5.  Create a new pull request.
+
+## License
+
+This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for details.
