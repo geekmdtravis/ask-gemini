@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import Settings from "./Settings";
 import Response from "./Response";
 
@@ -11,6 +11,13 @@ function App() {
   const [loading, setLoading] = useState(false);
   const [showSettings, setShowSettings] = useState(false);
   const [markdownEnabled, setMarkdownEnabled] = useState(true);
+  const inputRef = useRef<HTMLTextAreaElement>(null);
+
+  useEffect(() => {
+    if (inputRef.current) {
+      inputRef.current.focus();
+    }
+  }, []);
 
   useEffect(() => {
     chrome.storage.local.get(
@@ -115,6 +122,7 @@ function App() {
 
       <div className="relative mb-4">
         <textarea
+          ref={inputRef}
           id="question"
           rows={4}
           value={question}
