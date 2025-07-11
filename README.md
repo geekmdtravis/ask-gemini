@@ -49,6 +49,8 @@ A Firefox extension that allows you to ask Gemini questions about the content of
 3.  Enter a question in the text area and click "Ask".
 4.  The response will be displayed below the text area.
 
+![Screenshot of the extension in action](ga-ss.png)
+
 ## Contributing
 
 Contributions are welcome! Please follow these steps to contribute:
